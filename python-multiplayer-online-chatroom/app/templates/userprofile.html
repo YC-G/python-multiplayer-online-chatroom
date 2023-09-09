@@ -3,46 +3,52 @@
 {% block content %}
             <div class="card">
                 <div class="card-header">
-                    个人资料
+                    Personal Information
                 </div>
                 <div class="card-body">
                     <form id="form-data">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>昵称</label>
-                                    <input type="text" class="form-control" placeholder="请输入昵称！">
+                                    <label>Name</label>
+                                    {% raw xsrf_form_html() %}
+                                    <input type="hidden" name="id" value="{{data['user'].id}}">
+                                    <input type="text" class="form-control" name="name" value="{{data['user'].name}}" placeholder="Please enter your name！">
+                                    <p class="text-danger" id="error_name"></p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>邮箱</label>
-                                    <input type="email" class="form-control" placeholder="请输入邮箱！">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" value="{{data['user'].email}}" placeholder="Please enter your email！">
+                                    <p class="text-danger" id="error_email"></p>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>手机号码</label>
-                            <input type="text" class="form-control" placeholder="请输入手机号码！">
+                            <label>Phone Number</label>
+                            <input type="text" class="form-control" name="phone" value="{{data['user'].phone}}" placeholder="Please enter your phone number！">
+                            <p class="text-danger" id="error_phone"></p>
                         </div>
                         <div class="form-group">
-                            <label>性别</label>
+                            <label>Sex</label>
                             <br>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="input_sex1" name="sex"
-                                       class="custom-control-input">
-                                <label class="custom-control-label" for="input_sex1">男</label>
+                                <input type="radio" id="input_sex1" name="sex" value="1"
+                                       class="custom-control-input" {% if data['user'].sex == 1 %}checked{% end %}>
+                                <label class="custom-control-label" for="input_sex1">Male</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="input_sex2" name="sex"
-                                       class="custom-control-input">
-                                <label class="custom-control-label" for="input_sex2">女</label>
+                                <input type="radio" id="input_sex2" name="sex" value="2"
+                                       class="custom-control-input" {% if data['user'].sex == 2 %}checked{% end %}>
+                                <label class="custom-control-label" for="input_sex2">Female</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="input_sex3" name="sex"
-                                       class="custom-control-input">
-                                <label class="custom-control-label" for="input_sex3">保密</label>
+                                <input type="radio" id="input_sex3" name="sex" value="3"
+                                       class="custom-control-input" {% if data['user'].sex == 3 %}checked{% end %}>
+                                <label class="custom-control-label" for="input_sex3">Other</label>
                             </div>
+                            <p class="text-danger" id="error_sex"></p>
                         </div>
                         <!--表单字段的容器标签-->
                         <div class="form-group">
@@ -50,173 +56,63 @@
                             <label>星座</label>
                             <div class="row">
                                 <!--每一行原本12等分，现在我们分成6等分，每一分占2个栅格-->
+                                {% for v in handler.common_data['zodiac'] %}
                                 <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/1.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
+                                    <img src="{{static_url('zodiac/'+v['image'])}}"
+                                         class="lazyload blur-up img-fluid zodiac-img border border-info rounded">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio"
-                                               id="input_xingzuo1"
+                                               id="input_zodiac{{v['val']}}"
                                                class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo1">白羊座</label>
+                                               value="{{v['val']}}"
+                                               name="zodiac" {% if data['user'].zodiac == v['val'] %}checked{% end %}>
+                                        <label class="custom-control-label" for="input_zodiac{{v['val']}}">{{v['name']}}</label>
                                     </div>
-                                    <p class="xingzuo-date text-left">[03-21～04-19]</p>
+                                    <p class="zodiac-date text-left">{{v['birth']}}</p>
                                 </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/2.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo2"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo2">金牛座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[04-20～05-20]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/3.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo3"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo3">双子座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[05-21～06-21]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/4.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo4"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo4">巨蟹座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[06-22～07-22]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/5.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo5"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo5">狮子座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[07-23～08-22]</p>
+                                {% end %}
 
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/6.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo6"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo6">处女座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[08-23～09-22]</p>
-
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/7.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo7"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo7">天秤座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[09-23～10-23]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/8.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo8"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo8">天蝎座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[10-24～11-22]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/9.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo9"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo9">射手座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[11-23～12-21]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/10.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo10"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo10">摩羯座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[12-22～01-19]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/11.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo11"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo11">水瓶座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[01-20～02-18]</p>
-                                </div>
-                                <div class="col-md-2 text-left">
-                                    <img src="../static/xingzuo/12.png"
-                                         class="lazyload blur-up img-fluid xingzuo-img border border-info rounded">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio"
-                                               id="input_xingzuo12"
-                                               class="custom-control-input"
-                                               name="xingzuo">
-                                        <label class="custom-control-label" for="input_xingzuo12">双鱼座</label>
-                                    </div>
-                                    <p class="xingzuo-date text-left">[02-19～03-20]</p>
-                                </div>
                             </div>
+                            <p class="text-danger" id="error_zodiac"></p>
                         </div>
                         <div class="form-group">
-                            <label>个性签名</label>
-                            <textarea class="form-control"
-                                      placeholder="请输入个性签名！"
+                            <label>Bio</label>
+                            <textarea class="form-control" name="bio"
+                                      placeholder="Please enter your bio！"
                                       rows="5"
-                            ></textarea>
+                            >{% if data['user'].bio %} {{data['user'].bio}} {% end %}</textarea>
+                            <p class="text-danger" id="error_bio"></p>
                         </div>
                         <div class="form-group">
-                            <label for="input_face">头像</label>
-                            <input type="file" class="form-control-file" id="input_face">
+                            <label for="input_avatar">Avatar</label>
+                            <input type="file" class="form-control-file" id="file_avatar">
+                            <input type="hidden" name="avatar" value="{% if data['user'].avatar %}{{ data['user'].avatar }}{% end %}" id="input_avatar">
                             <hr class="hr-dv">
-                            <img data-src="holder.js/200x200">
+                            <div id="image_avatar">
+                                {% if data['user'].avatar %}
+                                <img src="/static/uploads/{{data['user'].avatar}}" style="width: 200px; height: 200px;">
+                                {% else %}
+                                <img data-src="holder.js/200x200">
+                                {% end %}
+                            </div>
                             <hr class="hr-dv">
-                            <a class="btn btn-info" href="javascript:void(0)">上传头像</a>
+                            <a class="btn btn-bio" id="upload_avatar" href="javascript:void(0)">Upload Avatar</a>
+                            <p class="text-danger" id="error_avatar"></p>
                         </div>
                         <div class="form-group">
-                            <a class="btn btn-primary" href="#">保存信息</a>
+                            <a class="btn btn-primary" href="javascript:void(0)" id="btn-sub">Save</a>
                         </div>
                     </form>
                 </div>
             </div>
+{% end %}
+
+{% block foot %}
+<script src="{{ static_url('js/upload.js')}}"></script>
+<script>
+    $(document).ready(function(){
+        upload('avatar', 200, 200, "/upload/");
+        request("/userprofile/", "/logout/", ["id","name","email","phone","avatar","bio"], "Changes are successful!")
+    });
+</script>
 {% end %}

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from sockjs.tornado import SockJSConnection
+from app.models.crud import CRUD
 import json
 import datetime
 
@@ -27,8 +28,10 @@ class ChatRoomHandler(SockJSConnection):
         # broadcast the message to all clients
         try:
             data = json.loads(message)
-            data["dt"] = datetime.datetime_now().strftime("%Y-%m-%d %H:%M:%S")
+            data["dt"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             content = json.dumps(data)
+            if data['code'] == 2:
+                CRUD.save_msg(content)
             self.broadcast(self.waiters, content)
         except Exception as e:
             print(e)

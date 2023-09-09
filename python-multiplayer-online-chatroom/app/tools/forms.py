@@ -133,8 +133,8 @@ class UserEditForm(Form):
         validators=[]
     )
 
-    info = StringField(
-        "signature",
+    bio = StringField(
+        "bio",
         validators=[]
     )
 

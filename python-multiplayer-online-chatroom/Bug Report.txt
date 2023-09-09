@@ -2,3 +2,4 @@
 2. <p class="text-danger"></p> this section doesn't show up in register.html when there are errors in the data passing -> id "#error-" is miss typed in request.js.
 3. 500 internal server error, invalid argument encoding in create_engine -> encoding is not allowed in create_engine in orm.py, but allowed in models.py. Possibly because encoding has contradiction with connect_args.
 4. 127.0.0.1:8080 fails to load: ChatHandler has no attribute "name" -> Need to inherent from CommonHandler
+5. data['user'] is Nonetype -> When editing the user info form, sex and zodiac can't be empty.

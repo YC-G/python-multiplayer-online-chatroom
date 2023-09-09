@@ -5,10 +5,6 @@ $(document).ready(function () {
     // Get client's name and avatar
     var name = $("#input_name").val();
     var avatar = $("#input_avatar").val();
-    console.log("name below")
-    console.log(name)
-    console.log("avatar below")
-    console.log(avatar)
 
     // Append chat box
     function append_msg(name, data) {
@@ -27,13 +23,13 @@ $(document).ready(function () {
                 html += data.content;
                 html += "</div>";
                 html += "</div>";
-                html += "<img class=\"ml-3 rounded-circle\" style='width: 60px;height: 60px;' src=\"" + data.face + "\">";
+                html += "<img class=\"ml-3 rounded-circle\" style='width: 60px;height: 60px;' src=\"" + data.avatar + "\">";
                 html += "</div></div></div>";
             } else {
                 html += "<div class=\"row\">";
                 html += "<div class=\"col-md-9\">";
                 html += "<div class=\"media\">";
-                html += "<img class=\"mr-3 rounded-circle\" style='width: 60px;height: 60px;' src=\"" + data.face + "\">";
+                html += "<img class=\"mr-3 rounded-circle\" style='width: 60px;height: 60px;' src=\"" + data.avatar + "\">";
                 html += "<div class=\"media-body\">";
                 html += "<h6 class=\"user-nickname\">" + data.name + "[" + data.dt + "]</h6>";
                 html += "<div class=\"alert alert-info\" role=\"alert\">";
@@ -45,12 +41,19 @@ $(document).ready(function () {
                 html += "</div>";
             }
         } else if (data.code == 1) {
-            html += "<p class='text-center text-success'>欢迎" + data.name + "进入聊天室！<img src='/static/images/rorse.gif'><img src='/static/images/rorse.gif'><img src='/static/images/rorse.gif'></p>"
+            html += "<p class='text-center text-success'>" + data.name + " has entered the chatroom!</p>"
         }
         $("#chat-list").append(html);
         SyntaxHighlighter.highlight();
         $("#chat-list").scrollTop($("#chat-list").scrollTop() + 9999999);
     }
+
+    function update_ui(event){
+        var data = event.data;
+        data = JSON.parse(data);
+        append_msg(name, data);
+    }
+
 
     // Define connection
     function connect() {
@@ -63,12 +66,29 @@ $(document).ready(function () {
 
         // client initiates a connection
         conn.onopen = function () {
+            $.ajax({
+                url: "/msg/",
+                type: "POST",
+                dataType: "json",
+                success: function (res) {
+                    var msg_data = res.data;
+                    for (var k in msg_data) {
+                        append_msg(name, msg_data[k]);
+                    }
+                    var enter_data = {
+                        code: 1,
+                        name: name,
+                        avatar: avatar
+                    };
+                    conn.send(JSON.stringify(enter_data));
+                }
+            });
 
         };
 
         // full duplex communication
-        conn.onmessage = function (e) {
-            console.log(e);
+        conn.onmessage = function (event) {
+            update_ui(event);
         };
 
         // close the connection

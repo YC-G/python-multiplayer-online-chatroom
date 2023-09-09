@@ -50,7 +50,7 @@ class CRUD(object):
                 sex=None,
                 zodiac=None,
                 avatar=None,
-                info=None,
+                bio=None,
                 createdAt=dt(),
                 updatedAt=dt()
             )
@@ -97,3 +97,68 @@ class CRUD(object):
         finally:
             session.close()
         return user
+
+
+    # Save user edited info
+    @staticmethod
+    def save_user(form):
+        session = ORM.db()
+        try:
+            user = session.query(User).filter_by(id=int(form.data['id'])).first()
+            user.name = form.data['name']
+            user.email = form.data['email']
+            user.phone = form.data['phone']
+            user.sex = int(form.data['sex'])
+            user.zodiac = int(form.data['zodiac'])
+            user.avatar = form.data['avatar']
+            user.bio = form.data['bio']
+            user.updatedAt = dt()
+            session.add(user)
+        except Exception as e:
+            print(e)
+            session.rollback()
+        else:
+            session.commit()
+        finally:
+            session.close()
+
+        return True
+
+
+    @staticmethod
+    def save_msg(content):
+        session = ORM.db()
+        try:
+            msg = Msg(
+                content=content,
+                createdAt=dt(),
+                updatedAt=dt()
+            )
+            session.add(msg)
+        except Exception as e:
+            session.rollback()
+        else:
+            session.commit()
+        finally:
+            session.close()
+        return True
+
+    @staticmethod
+    def latest_msg():
+        session = ORM.db()
+        data = []
+        try:
+            data = session.query(Msg).order_by(Msg.createdAt.desc()).limit(100).all()
+        except Exception as e:
+            session.rollback()
+        else:
+            session.commit()
+        finally:
+            session.close()
+        return data
+
+
+
+
+
+

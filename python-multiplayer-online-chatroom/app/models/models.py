@@ -27,7 +27,7 @@ class User(Base):
     sex = Column(TINYINT, nullable=True)
     zodiac = Column(TINYINT, nullable=True)
     avatar = Column(VARCHAR(100), nullable=True)
-    info = Column(VARCHAR(600), nullable=True)
+    bio = Column(VARCHAR(600), nullable=True)
     createdAt = Column(DATETIME, nullable=False)
     updatedAt = Column(DATETIME, nullable=False)
 
@@ -52,7 +52,6 @@ if __name__ == "__main__":
     # link format: "db_system_name + connection_driver_name://user:password@host:port/db_name"
     engine = create_engine(
         "mysql+mysqlconnector://{db_user}:{db_pwd}@{db_host}:{db_port}/{db_name}".format(**mysql_configs),
-        encoding='utf-8'
     )
 
     metadata.create_all(engine)
